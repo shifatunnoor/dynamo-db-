@@ -1,0 +1,168 @@
+//Setting up your Node.js application to work with DynamoDB is fairly easy. First, make sure that aws-sdk is installed, either by running yarn add aws-sdk or npm i aws-sdk --save. Then, paste following piece of code:
+
+i.) yarn add aws-sdk or npm i aws-sdk --save(starting cofiguration into dynamodb aws project):
+
+
+NOTE:
+WE HAVE A REQUEST TO MAKE A TABLE CALLED order Table, then we we add items to the table, lastly we get items from the table.
+
+ii.) Create table:(in terminal run command :mkdir main.js && cd main.js) then inside main.js you paste this code: 
+
+const documentClient = new AWS.DynamoDB.DocumentClient({
+  region: "us-east-1",
+  // and rest of properties
+})
+
+const AWS = require("aws-sdk")
+AWS.config.update({ region: "us-east-1" })
+const dynamoDB = new AWS.DynamoDB()
+
+dynamoDB
+  .createTable({
+    AttributeDefinitions: [
+      {
+        AttributeName: "id", 
+        AttributeType: "S",  
+      },
+    ],
+    KeySchema: [
+      {
+        AttributeName: "id",
+        KeyType: "HASH",
+      },
+    ],
+    BillingMode: "PAY_PER_REQUEST",
+    TableName: "Order-table",
+  })
+  .promise()
+  .then(data => console.log("Success!", data))
+  .catch(console.error)
+  
+  
+  NEXT WE ADD ITEMS TO THE TABLE:
+  
+const AWS = require("aws-sdk")
+AWS.config.update({ region: "us-east-1" })
+const dynamoDB = new AWS.DynamoDB.DocumentClient()
+
+dynamoDB
+  .put({
+    Item: {
+      id: "12346",
+      name: "stickers",
+      quantities: "",
+	  shippingAddress: "",
+	  shippingType: "",
+	  amountBilled: "",
+	  paymentMethod: "",
+	  TrackingNumber: "",
+	  Delivery/FulfillmentStatus: "",
+    },
+    TableName: "order-table",
+  })
+  .promise()
+  .then(data => console.log(data.Attributes))
+  .catch(console.error)
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  
+  SO THIS IS HOW WE ADD ITEM TO THE TABLE: ADD THIS CODE TO THE main.js file:
+  main.js file
+  
+const AWS = require("aws-sdk")
+AWS.config.update({ region: "us-east-1" })
+const dynamoDB = new AWS.DynamoDB.DocumentClient()
+
+const documentClient = new AWS.DynamoDB.DocumentClient({
+  region: "us-east-1",
+  // and rest of properties
+})
+
+dynamoDB
+  .createTable({
+    AttributeDefinitions: [
+      {
+        AttributeName: "id", 
+        AttributeType: "S",  
+      },
+    ],
+    KeySchema: [
+      {
+        AttributeName: "id",
+        KeyType: "HASH",
+      },
+    ],
+    BillingMode: "PAY_PER_REQUEST",
+    TableName: "Order-table",
+  })
+
+  .put({
+    Item: {
+      id: "12346",
+      name: "stickers",
+      quantities: "",
+	  shippingAddress: "",
+	  shippingType: "",
+	  amountBilled: "",
+	  paymentMethod: "",
+	  TrackingNumber: "",
+	  Delivery/FulfillmentStatus: "",
+    },
+    TableName: "order-table",
+  })
+  .promise()
+  .then(data => console.log(data.Attributes))
+  .catch(console.error)
+  
+  NOTE: SAVE THIS FILE AS MAIN FILE // BECAUSE IT IS THE FILE WHERE WE CREATED NEW TABLE AND ADD ITEMS TO TABLE FILE/////////////////////////////////// node main.js
+  
+  
+  
+  
+  
+  
+  
+  
+  
+ /////// LASTLY LETS GET ITEMS FROM THE TABLE(CREATE NEW FILE NAME scan.js);;;///////////////////////////
+  
+const AWS = require("aws-sdk")
+AWS.config.update({ region: "us-east-1" })
+const dynamoDB = new AWS.DynamoDB.DocumentClient()
+
+dynamoDB
+  .scan({
+    TableName: "order-table",
+	FilterExpression:
+      "attribute_not_exists(deletedAt) AND contains(sticker, :size)",
+    ExpressionAttributeValues: {
+      ":sticker": "size",
+    },
+  })
+
+  .get({
+    TableName: "order-table",
+    Key: {
+      id: "123", // id is the Partition Key, '123' is the value of it
+    },
+  })
+  .promise()
+  .then(data => console.log(data.Items))
+  .catch(console.error)
+  
+  
+  So to call any file from terminal run command: node scan.js to get information from file.
+  
+  
